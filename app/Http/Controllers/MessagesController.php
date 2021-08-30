@@ -253,7 +253,7 @@ class MessagesController extends Controller
         /conocimiento -> ¿Qué tecnologías usaron en mi?\n
         /ingles -> Para saber respecto a los cursos de inglés\n
         /guias -> Consulta las guías actuales\n
-        /unprg -> bla bla\n
+        /unprg -> ¿Dónde estudio?\n
         ";
     }
     /**
