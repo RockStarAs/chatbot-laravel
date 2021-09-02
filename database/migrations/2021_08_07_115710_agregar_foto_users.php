@@ -15,6 +15,7 @@ class AgregarFotoUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('link_img')->nullable();
+            $table->string('tipo_usuario')->nullable(); //Controlaremos los administradores del bot
         });
     }
 
@@ -27,6 +28,7 @@ class AgregarFotoUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('link_img');
+            $table->dropColumn('tipo_usuario');
         });
     }
 }

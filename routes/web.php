@@ -22,6 +22,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/casa', [App\Http\Controllers\HomeController::class, 'index2']);
 
 Route::get('/auth/google/redirect',[GoogleController::class,'redirect']);
 Route::get('/auth/google/callback',[GoogleController::class,'callback']);

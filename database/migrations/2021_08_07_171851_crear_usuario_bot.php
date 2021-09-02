@@ -20,9 +20,9 @@ class CrearUsuarioBot extends Migration
         //Solo crear usuario bot
         $usuario = new User();
         $usuario->name = "Pedrito BOT - El Bot de EPICI";
-        $usuario->email = "bot@support.unprg.edu.pe";
-        $usuario->avatar = "https://static.botsrv2.com/website/img/quriobot_favicon.1727b193.png";
-        $usuario->link_img = "https://static.botsrv2.com/website/img/quriobot_favicon.1727b193.png";
+        $usuario->email = "bot@soporte.unprg.edu.pe";
+        $usuario->avatar = "https://i.ibb.co/hVrNYpR/pedronuevo.png";
+        $usuario->link_img = "https://i.ibb.co/hVrNYpR/pedronuevo.png";
         $usuario->google_id = env('BOT_UNPRG_SECRET_ID'); //Para eliminar //Por defecto este debería ser el primero
         $usuario->save();
     }

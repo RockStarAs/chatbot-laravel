@@ -24,5 +24,9 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+        //return redirect()->route('chatify');
+    }
+    public function index2(){
+        return view('home');
     }
 }
