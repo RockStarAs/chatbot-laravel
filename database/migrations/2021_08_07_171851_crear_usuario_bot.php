@@ -24,6 +24,7 @@ class CrearUsuarioBot extends Migration
         $usuario->avatar = "https://i.ibb.co/hVrNYpR/pedronuevo.png";
         $usuario->link_img = "https://i.ibb.co/hVrNYpR/pedronuevo.png";
         $usuario->google_id = env('BOT_UNPRG_SECRET_ID'); //Para eliminar //Por defecto este debería ser el primero
+        $usuario->active_status = 1;
         $usuario->save();
     }
 

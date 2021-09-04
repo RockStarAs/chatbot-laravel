@@ -28,4 +28,5 @@ Route::get('/auth/google/redirect',[GoogleController::class,'redirect']);
 Route::get('/auth/google/callback',[GoogleController::class,'callback']);
 
 Route::post('chatify/replyBot',[App\Http\Controllers\MessagesController::class,'mensajeBot']);
+Route::resource('/comando',App\Http\Controllers\ComandoController::class);
 

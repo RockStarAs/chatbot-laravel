@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Comando extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+    protected $table = "comandos";
 }
