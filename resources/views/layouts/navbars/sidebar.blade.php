@@ -6,7 +6,7 @@
   -->
     <div class="logo">
         <a href="{{ route('home') }}" class="simple-text logo-normal">
-            {{ __('Pedrito-BOT') }}
+            {{ __('PedritoBot') }}
         </a>
     </div>
     <div class="sidebar-wrapper">
@@ -40,6 +40,12 @@
                         </li>
                     </ul>
                 </div>
+            </li>
+            <li class="nav-item{{ $activePage == 'user-management' ? ' active' : '' }}">
+                <a class="nav-link" href="{{ route('chatify') }}">
+                    <i><img style="width:25px" src="{{ asset('images') }}/PedritoBot.svg"></i>
+                    <span class="sidebar-normal"> {{ __('PedritoBot') }} </span>
+                </a>
             </li>
             @if(Auth::user()->tipo_usuario == 'ADMIN')
             <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management') ? ' active' : '' }}">

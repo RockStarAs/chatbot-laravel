@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Response;
 use App\Models\ChMessage as Message;
 use App\Models\ChFavorite as Favorite;
+use App\Models\Comando;
 use Chatify\Facades\ChatifyMessenger as Chatify;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -102,7 +103,7 @@ class MessagesController extends Controller
         if (file_exists($path)) {
             return Response::download($path, $fileName);
         } else {
-            return abort(404, "Sorry, File does not exist in our server or may have been deleted!");
+            return abort(404, "Lo siento, es posible que el archivo no se encuentre en el servidor.");
         }
     }
 
@@ -202,17 +203,42 @@ class MessagesController extends Controller
         $attachment_title = null;
         $msje = htmlentities(trim($request['msj']), ENT_QUOTES, 'UTF-8');
         $id_bot = User::where('google_id',env('BOT_UNPRG_SECRET_ID'))->first()->id;
-        switch($msje){
-            case '/help':
-            //Dar lista de comandos
-                $new_msj = $this->comandos();
-            break;
-            case '/unprg':
-                $new_msj = "Estudias en la UNPRG";
-                break;
-            default:
-                $new_msj = "No encuentro ese comando ​👾​🤖​";
-            break;
+        //$new_msj-> es la respuesta que dará 
+        $existe_archivo = false;
+        $no_es_grupal = false;
+        if($msje == '/cmd'){
+            $new_msj = $this->comandos_bot();
+        }else{
+            $comando = Comando::where('nombre',$msje)->first();
+            if(is_null($comando)){
+                $new_msj = "¡Opss..!, no reconozco ese comando \n Si necesitas ayuda, el comando '/cmd', podría serte útil.";
+            }
+            else{
+                switch($comando->tipo_comando){
+                    case 'SUBCOMANDO':
+                        $no_es_grupal = true;
+                        break;
+                    case 'NORMAL':
+                        $new_msj = $comando->respuesta;
+                        //También puede ser que tenga data
+                        $no_es_grupal = true;
+                        break;
+                    case 'GRUPAL':
+                        $no_es_grupal = false;
+                        $new_msj = $comando->respuesta;
+                        break;
+                }
+            }    
+        }
+        if($no_es_grupal){
+            //Preguntaremos si tiene un archivo de tipo_respuesta
+            if($comando->tipo_respuesta != null){
+                if($comando->tipo_respuesta == 'ARCHIVO'){
+                    //La ruta archivo será el attachment o adjunto
+                    $attachment = $comando->ruta_archivo;
+                    $attachment_title = $comando->ruta_archivo;
+                }
+            }
         }
         $rpta_bot_id = mt_rand(9, 999999999) + time();
         Chatify::newMessage([
@@ -244,8 +270,8 @@ class MessagesController extends Controller
             'msj' => $request['msj'],
         ]);
     }
-    public function comandos(){
-        return "***🤖 Hola, esta es mi lista de comandos 🤖 ***\n
+    public function comandos_bot(){
+        /*return "***🤖 Hola, esta es mi lista de comandos 🤖 ***\n
         /ciclo -> Para saber en que ciclo acádemico nos encontramos\n
         /director -> Para saber el nombre del director de la EPICI\n
         /cocurricular -> Para saber todo acerca los cursos cocurriculares\n
@@ -254,7 +280,20 @@ class MessagesController extends Controller
         /ingles -> Para saber respecto a los cursos de inglés\n
         /guias -> Consulta las guías actuales\n
         /unprg -> ¿Dónde estudio?\n
-        ";
+        ";*/
+        $comandos_normal = Comando::all()->where('tipo_comando', '=', 'NORMAL');
+        $comandos_grupal = Comando::all()->where('tipo_comando', '=', 'GRUPAL');
+        
+        //$comandos = array_merge($comandos_grupal,$comandos_normal);
+        $respuesta = "🤖Hola, mi lista de comandos es :\n ";
+        foreach($comandos_normal as $comando){
+            $respuesta = $respuesta . $comando->nombre . "->" . $comando->descripcion . "\n";
+        }
+        foreach($comandos_grupal as $comando){
+            $respuesta = $respuesta . $comando->nombre . "->" . $comando->descripcion . "\n";
+        }
+        return $respuesta;
+
     }
     /**
      * fetch [user/group] messages from database

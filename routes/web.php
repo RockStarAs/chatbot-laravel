@@ -30,3 +30,9 @@ Route::get('/auth/google/callback',[GoogleController::class,'callback']);
 Route::post('chatify/replyBot',[App\Http\Controllers\MessagesController::class,'mensajeBot']);
 Route::resource('/comando',App\Http\Controllers\ComandoController::class);
 
+//Eliminar COMANDO
+Route::delete('/comando/{comando}', [App\Http\Controllers\ComandoController::class, 'destroy'])->name('comando.destroy');
+
+//Modificar COMANDO
+Route::get('/comando/{comando}/edit', [App\Http\Controllers\ComandoController::class, 'edit'])->name('comando.edit');
+Route::put('comando/{comando}', [App\Http\Controllers\ComandoController::class, 'update'])->name('comando.update');
