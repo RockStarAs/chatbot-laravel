@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Response;
 use App\Models\ChMessage as Message;
 use App\Models\ChFavorite as Favorite;
 use App\Models\Comando;
+use App\Models\Subcomando;
 use Chatify\Facades\ChatifyMessenger as Chatify;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -206,8 +207,11 @@ class MessagesController extends Controller
         //$new_msj-> es la respuesta que dará 
         $existe_archivo = false;
         $no_es_grupal = false;
+        $no_cmd = true;
         if($msje == '/cmd'){
             $new_msj = $this->comandos_bot();
+            $no_es_grupal = true;
+            $no_cmd = false;
         }else{
             $comando = Comando::where('nombre',$msje)->first();
             if(is_null($comando)){
@@ -216,6 +220,7 @@ class MessagesController extends Controller
             else{
                 switch($comando->tipo_comando){
                     case 'SUBCOMANDO':
+                        $new_msj = $comando->respuesta;
                         $no_es_grupal = true;
                         break;
                     case 'NORMAL':
@@ -230,7 +235,7 @@ class MessagesController extends Controller
                 }
             }    
         }
-        if($no_es_grupal){
+        if($no_es_grupal && $no_cmd){
             //Preguntaremos si tiene un archivo de tipo_respuesta
             if($comando->tipo_respuesta != null){
                 if($comando->tipo_respuesta == 'ARCHIVO'){
@@ -238,6 +243,17 @@ class MessagesController extends Controller
                     $attachment = $comando->ruta_archivo;
                     $attachment_title = $comando->ruta_archivo;
                 }
+            }
+        }else{
+            if($no_cmd && !$no_es_grupal){
+                //Respuesta de comando grupal, tendría que responder con sus comandos hijos
+                $subcomandos = Subcomando::all()->where('comando_padre','=',$comando->id);
+                //echo json_encode($subcomandos);die();
+                $respuesta_subcomandos = "🤖Hola, has elegido un comando grupal, con los siguientes subcomandos: \n";
+                foreach($subcomandos as $subcom){
+                    $respuesta_subcomandos = $respuesta_subcomandos . $subcom->nombre . "->" . $subcom->descripcion . "\n";
+                }
+                $new_msj = $respuesta_subcomandos;
             }
         }
         $rpta_bot_id = mt_rand(9, 999999999) + time();
@@ -247,7 +263,7 @@ class MessagesController extends Controller
             'from_id' => $id_bot,
             'to_id' => Auth::user()->id,
             'type' => 'user',
-            'body' => htmlentities(trim($new_msj), ENT_QUOTES, 'UTF-8'),
+            'body' => trim($new_msj),
             'attachment' => ($attachment) ? json_encode((object)[
                 'new_name' => $attachment,
                 'old_name' => $attachment_title,
@@ -293,7 +309,6 @@ class MessagesController extends Controller
             $respuesta = $respuesta . $comando->nombre . "->" . $comando->descripcion . "\n";
         }
         return $respuesta;
-
     }
     /**
      * fetch [user/group] messages from database

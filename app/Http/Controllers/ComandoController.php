@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Comando;
+use App\Models\Subcomando;
 use Illuminate\Support\Str;
 
 class ComandoController extends Controller
@@ -31,7 +32,12 @@ class ComandoController extends Controller
      */
     public function create()
     {
-        return view('comando.crear');
+        //Retonar comandos padre
+        //Buscando primero los comandos padre
+        //$comandos_padre = Comando::where('tipo_comando','=','GRUPAL');
+        $comandos_padre = Comando::all()->where('tipo_comando','=','GRUPAL');
+        //echo json_encode($comandos_padre);die();
+        return view('comando.crear',['comandos_padre'=>$comandos_padre]);
     }
 
     /**
@@ -53,23 +59,48 @@ class ComandoController extends Controller
         $ruta_archivo = "";
         if($request->tipo_respuesta == 'ARCHIVO'){
             $archivo_guardar = $request->file('archivo_respuesta');
-            if ($archivo_guardar->getSize() <= 0) {
-                $request->session()->flash('mensaje','No se ha podido registrar, porque el archivo no fue ingresado.');
+            if($archivo_guardar == null) {
+                $validacion->errors()->add('archivo_respuesta', 'Por favor selecciona un archivo.');
             }else{
-                //Guardar el archivo
-                //$titulo_archivo = $archivo_guardar->getClientOriginalName();
-                $titulo_nuevo = "PEDRO_BOT" . rand(). "-" .$archivo_guardar->getClientOriginalName();
-                $archivo_guardar->storeAs("public/" . config('chatify.attachments.folder'), $titulo_nuevo);
-                $ruta_archivo = $titulo_nuevo;
+                if ($archivo_guardar->getSize() <= 0) {
+                    $validacion->errors()->add('archivo_respuesta', 'Por favor selecciona un archivo.');
+                    //return redirect()->route('comando.create')->withErrors($validacion)->withInput();
+    
+                    //$request->session()->flash('mensaje','No se ha podido registrar, porque el archivo no fue ingresado.');
+                }else{
+                    //Guardar el archivo
+                    //$titulo_archivo = $archivo_guardar->getClientOriginalName();
+                    $titulo_nuevo = "PEDRO_BOT" . rand(). "-" .$archivo_guardar->getClientOriginalName();
+                    $archivo_guardar->storeAs("public/" . config('chatify.attachments.folder'), $titulo_nuevo);
+                    $ruta_archivo = $titulo_nuevo;
+                }
             }
         }else{
             //Guardar normal, creo
+            $ruta_archivo = 'NULL';
+        }
+
+        if($request->tipo_comando == 'SUBCOMANDO'){
+            if($request->input('comando_padre') == 'no_select'){
+                $validacion->errors()->add('comando_padre', 'Debes seleccionar un comando padre.');
+                return redirect()->route('comando.create')->withErrors($validacion)->withInput();
+            }else{
+                //Agregando un subcomando 
+                $subcomando = new Subcomando();
+                $subcomando->tipo_respuesta = $request->input('tipo_respuesta');
+                $subcomando->nombre = '/' . $request->input('nombre_comando');
+                $subcomando->comando_padre = $request->input('comando_padre'); //El ID del comando padre quedará guardado acá
+                $subcomando->respuesta = $request->input('respuesta');
+                $subcomando->ruta_archivo = $ruta_archivo;
+                $subcomando->descripcion = $request->input('descripcion');
+                $subcomando->save();
+                //echo json_encode($subcomando);die();
+            }
         }
         //Este if es por si detecta errores
         if($validacion->fails()){
             return redirect()->route('comando.create')->withErrors($validacion)->withInput();
         }
-
         //En caso no detecte ningún error, agregaremos a la bd de
         /*$persona = new Persona();
         $persona->apellido_paterno = $request->input('apellido_paterno');
@@ -88,6 +119,11 @@ class ComandoController extends Controller
         $comando->ruta_archivo = $ruta_archivo; 
         $comando->tipo_respuesta = $request->input('tipo_respuesta');
         $comando->respuesta = $request->input('respuesta');
+        //Viendo si la respuesta tiene un link
+        $respuesta_con_links= preg_replace("/((http|https|www)[^\s]+)/", '<a target=”_blank” href="$1">$0</a>', $comando->respuesta);
+        //miro si hay enlaces con solamente www, si es así le añado el https://
+        $respuesta_con_links= preg_replace("/href=\"www/", 'href="https://www', $respuesta_con_links);
+        $comando->respuesta = $respuesta_con_links;
 
         $comando->save();
 

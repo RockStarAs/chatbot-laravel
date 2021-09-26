@@ -135,7 +135,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row mb-3 d-none" id="div_archivo">
                             <label class="col-sm-2 col-form-label" for="archivo_respuesta">Elige el archivo
                             </label>
@@ -159,11 +158,33 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- Elegir comando padre a los subcomandos --}}
+                        <div class="row mb-3 d-none" id="div_comandos_padre">
+                            <label class="col-sm-2 col-form-label" for="comando_padre">Comando Padre</label>
+                            <div class="col-sm-10">
+                                <div class="form-group bmd-form-group">
+                                    <select class="form-control @error('comando_padre')
+                                            is-invalid
+                                        @enderror" name="comando_padre" id="comando_padre">
+                                        <option value="no_select" @if(old('comando_padre')=='no_select' ) selected @endif>Sin selección</option>
+                                        {{-- Esta vista regresa con el listado de comandos padre --}}
+                                        @foreach($comandos_padre as $comando)
+                                            <option value="{{$comando->id}}" @if(old('comando_padre')==$comando->id ) selected @endif>{{$comando->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('comando_padre')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="respuesta">Respuesta</label>
                             <div class="col-sm-10">
                                 <div class="form-group bmd-form-group">
-                                    <textarea class="form-control" style="" value="{{ old('respuesta') }}" name="respuesta" id="respuesta" placeholder="Instrucciones o respuesta que mostrará PedritoBot..."></textarea>
+                                    <textarea class="form-control" style="" value="{{ old('respuesta') }}" name="respuesta" id="respuesta" placeholder="Instrucciones o respuesta que mostrará PedritoBot...">{{ old('respuesta') }}</textarea>
                                     {{--<input type="text" value="{{ old('respuesta') }}" name="respuesta" class="form-control @error('respuesta')
                                     is-invalid
                                     @enderror" id="respuesta">--}}
@@ -174,7 +195,6 @@
                                     @enderror
                                 </div>
                             </div>
-
                         </div>
                         <div class="card-footer ml-auto mr-auto">
                             <button type="submit" class="btn btn-info">Agregar<div class="ripple-container"></div></button>
@@ -191,13 +211,23 @@
 @endsection
 @push('js')
 <script type="text/javascript">
+    //Script comandos padre 
     document.getElementById('tipo_comando').addEventListener('change', function(){
         if(document.getElementById('tipo_comando').value == 'GRUPAL'){
             //Si es grupal, el comando obviamente no puede responder con un archivo
             document.getElementById('tipo_respuesta').value = 'NORMAL';
             document.getElementById('tipo_respuesta').disabled = true;
-            document.getElementById('tipo_respuesta').dispatchEvent(new Event("change"));;
+            document.getElementById('tipo_respuesta').dispatchEvent(new Event("change"));
+            document.getElementById('div_comandos_padre').classList.add('d-none');
+            document.getElementById('div_comandos_padre').classList.remove('d-block');
         }else{
+            if(document.getElementById('tipo_comando').value == 'SUBCOMANDO'){
+                document.getElementById('div_comandos_padre').classList.remove('d-none');
+                document.getElementById('div_comandos_padre').classList.add('d-block');
+            }else{
+                document.getElementById('div_comandos_padre').classList.add('d-none');
+                document.getElementById('div_comandos_padre').classList.remove('d-block');
+            }
             document.getElementById('tipo_respuesta').value = 'NORMAL';
             document.getElementById('tipo_respuesta').disabled = false;        
         }
@@ -237,6 +267,10 @@
             document.getElementById('archivo_respuesta').value = null;
         }
     });
+    document.addEventListener('DOMContentLoaded', function(){
+        document.getElementById('tipo_comando').dispatchEvent(new Event("change"));
+        document.getElementById('tipo_respuesta').dispatchEvent(new Event("change"));
+    }); 
 
 </script>
 @endpush
