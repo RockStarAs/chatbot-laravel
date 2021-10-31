@@ -4,8 +4,8 @@
     <div class="messenger-listView">
         {{-- Header and search bar --}}
         <div class="m-header">
-            <nav style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
-                <a href="#" style="display: flex; align-items: center;"><img src="{{ asset('images/icons/icon-fast.ico') }}" alt="" style="width: 25px; margin-right: 5px;"> <span class="messenger-headTitle" style="font-size: 1.5em;">Chats</span> </a>
+            <nav>
+                <a href="#"><i class="fas fa-inbox"></i> <span class="messenger-headTitle">Mensajes</span> </a>
                 {{-- header buttons --}}
                 <nav class="m-header-right">
                     <a href="#"><i class="fas fa-cog settings-btn"></i></a>
@@ -13,11 +13,9 @@
                 </nav>
             </nav>
             {{-- Search input --}}
-            <input type="text" class="messenger-search" placeholder="@if(Auth::user()->tipo_usuario == 'INVITADO') {{"Función deshabilitada"}} @else {{"Buscar"}} @endif" style="padding: 10px 15px; border-radius: 18px; margin" @if(Auth::user()->tipo_usuario == 'INVITADO')
-                {{"disabled"}}
-            @endif />
+            <input type="text" class="messenger-search" placeholder="Search" />
             {{-- Tabs --}}
-            <div class="messenger-listView-tabs" style="margin-top:5px;">
+            <div class="messenger-listView-tabs">
                 <a href="#" @if($route == 'user') class="active-tab" @endif data-view="users">
                     <span class="far fa-user"></span> Personas</a>
                 <a href="#" @if($route == 'group') class="active-tab" @endif data-view="groups">
@@ -31,7 +29,7 @@
            <div class="@if($route == 'user') show @endif messenger-tab app-scroll" data-view="users">
 
                {{-- Favorites --}}
-               <div class="favorites-section" style="margin-top: 5px">
+               <div class="favorites-section">
                 <p class="messenger-title">Favoritos</p>
                 <div class="messenger-favorites app-scroll-thin"></div>
                </div>
@@ -47,15 +45,15 @@
            {{-- ---------------- [ Group Tab ] ---------------- --}}
            <div class="@if($route == 'group') show @endif messenger-tab app-scroll" data-view="groups">
                 {{-- items --}}
-                <p style="text-align: center;color:grey; margin-top: 10px">Pronto disponible.</p>
+                <p style="text-align: center;color:grey;">Pronto disponible.</p>
              </div>
 
              {{-- ---------------- [ Search Tab ] ---------------- --}}
            <div class="messenger-tab app-scroll" data-view="search">
                 {{-- items --}}
-                <p class="messenger-title">Búsqueda</p>
+                <p class="messenger-title">Buscar</p>
                 <div class="search-records">
-                    <p class="message-hint center-el"><span>Resultados de búsqueda</span></p>
+                    <p class="message-hint center-el"><span>Escribe algo..</span></p>
                 </div>
              </div>
         </div>
@@ -64,14 +62,14 @@
     {{-- ----------------------Messaging side---------------------- --}}
     <div class="messenger-messagingView">
         {{-- header title [conversation name] amd buttons --}}
-        <div class="m-header m-header-messaging" style="width: 100%;">
-            <nav style="display: flex; justify-content: space-between; align-items:center; width: 100%;">
+        <div class="m-header m-header-messaging">
+            <nav>
                 {{-- header back button, avatar and user name --}}
-                <div style="display: inline-flex; width: 70%">
+                <div style="display: inline-flex;">
                     <a href="#" class="show-listView"><i class="fas fa-arrow-left"></i></a>
                     <div class="avatar av-s header-avatar" style="margin: 0px 10px; margin-top: -5px; margin-bottom: -5px;">
                     </div>
-                    <a href="#" class="user-name" style="width: 80%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ config('chatify.name') }}</a>
+                    <a href="#" class="user-name">{{ config('chatify.name') }}</a>
                 </div>
                 {{-- header buttons --}}
                 <nav class="m-header-right">
@@ -92,7 +90,6 @@
             <div class="messages">
                 <p class="message-hint center-el"><span>Inicia un chat</span></p>
             </div>
-
             {{-- Typing indicator --}}
             <div class="typing-indicator">
                 <div class="message-card typing">
@@ -118,5 +115,6 @@
         {!! view('Chatify::layouts.info')->render() !!}
     </div>
 </div>
+
 @include('Chatify::layouts.modals')
 @include('Chatify::layouts.footerLinks')

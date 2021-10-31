@@ -19,10 +19,10 @@ class CrearUsuarioBot extends Migration
         });
         //Solo crear usuario bot
         $usuario = new User();
-        $usuario->name = "Pedrito BOT - El Bot de EPICI";
+        $usuario->name = "Wally Bot";
         $usuario->email = "bot@soporte.unprg.edu.pe";
-        $usuario->avatar = "https://i.ibb.co/hVrNYpR/pedronuevo.png";
-        $usuario->link_img = "https://i.ibb.co/hVrNYpR/pedronuevo.png";
+        $usuario->avatar = "https://i.ibb.co/Gp05rs3/Wally-01.png";
+        $usuario->link_img = "https://i.ibb.co/Gp05rs3/Wally-01.png";
         $usuario->google_id = env('BOT_UNPRG_SECRET_ID'); //Para eliminar //Por defecto este debería ser el primero
         $usuario->active_status = 1;
         $usuario->save();
@@ -41,7 +41,6 @@ class CrearUsuarioBot extends Migration
         $usuario = User::where('google_id','=',env('BOT_UNPRG_SECRET_ID'));
         if(!is_null($usuario)){
             $usuario->delete();
-        }
-        
+        }        
     }
 }

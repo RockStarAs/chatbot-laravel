@@ -3,6 +3,6 @@
         @csrf
         <label><span class="fas fa-paperclip"></span><input disabled='disabled' type="file" class="upload-attachment" name="file" accept="image/*, .txt, .rar, .zip" /></label>
         <textarea readonly='readonly' name="message" class="m-send app-scroll" placeholder="Escribe algo..."></textarea>
-        <button disabled='disabled'><span class="fas fa-paper-plane"></span></button>
+        <button disabled='disabled' id='btn_enviar'><span class="fas fa-paper-plane"></span></button>
     </form>
 </div>

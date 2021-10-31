@@ -63,9 +63,9 @@ class GoogleController extends Controller
 
         $msj_bienvenida->body = "🤖BIENVENIDO a Pedrito BOT - EL BOT de EPICI🤖\n
         ¡Bep bep! ¡Bop! ¡Estoy vivo! \n
-        Hola
+        Hola ".$usuario_nuevo->name ."
         Te ayudaré con las consultas que pueda, si crees que me faltan más preguntas por responder, no dudes en comunicarte con mis desarrrolladores, si crees que puedes hacer crecer el proyecto de igual manera no dudes en comunicarte con mis desarrolladores.😀\n
-        Por favor escribe '/help' para darte mi lista de comandos. 
+        Por favor escribe <b>/cmd</b> para darte mi lista de comandos. 
         ";
         $msj_bienvenida->save();
         

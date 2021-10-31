@@ -42,8 +42,10 @@
                       style="background-image: url('{{Auth::user()->avatar }}');"
                       ></div>
                       <p class="upload-avatar-details"></p>
-                      <label class="app-btn a-btn-primary update">
-                          Cambia tu foto de perfil
+                      <label class="app-btn a-btn-danger update d-none">
+                          Cerrar Sesión <span class="
+                        {{ Auth::user()->dark_mode > 0 ? 'fas' : 'far' }} fa-sign-out-alt"
+                         data-mode="{{ Auth::user()->dark_mode > 0 ? 1 : 0 }}"></span>
                           <input class="upload-avatar" accept="image/*" name="avatar" type="file" style="display: none" />
                       </label>
                       {{-- Dark/Light Mode  --}}
@@ -73,6 +75,15 @@
                       <input type="submit" class="app-btn a-btn-success update" value="Actualizar" />
                   </div>
               </form>
+              <a class="app-btn a-btn-danger update" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
           </div>
       </div>
   </div>

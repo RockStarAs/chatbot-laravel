@@ -7,7 +7,7 @@ return [
     | Messenger display name
     |-------------------------------------
     */
-    'name' => env('CHATIFY_NAME', 'EPICI Chat'),
+    'name' => env('CHATIFY_NAME', 'fast Chat'),
 
     /*
     |-------------------------------------

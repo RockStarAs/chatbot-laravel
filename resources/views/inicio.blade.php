@@ -2,6 +2,141 @@
 
 @section('content')
   <div class="content">
+    <div class="container-fluid">
+      {{--Conteo estadístico--}}
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <div class="card card-stats">
+            <div class="card-header card-header-info card-header-icon">
+              <div class="card-icon">
+                <i class="material-icons">supervisor_account</i>
+              </div>
+              <p class="card-category">Usuarios</p>
+              <h3 class="card-title">{{$total_usuarios - 1}}
+              </h3>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">date_range</i> Hasta ahora
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-6">
+          <div class="card card-stats">
+            <div class="card-header card-header-info card-header-icon">
+              <div class="card-icon">
+                <i class="material-icons">code</i>
+              </div>
+              <p class="card-category">Comandos</p>
+              <h3 class="card-title">{{$total_comandos}}
+              </h3>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">date_range</i> Hasta ahora
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{--Gráficos estadísticos--}}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-chart">
+            <div class="card-header card-header-info">
+              <div class="ct-chart" id="dailySalesChart"></div>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">Usuarios</h4>
+              <p class="card-category">
+                <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> incrementó en esta semana.</p>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">access_time</i> Ahora
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{--Tabla Usuarios/Usuarios Admin--}}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-tabs card-header-info">
+              <div class="nav-tabs-navigation">
+                <div class="nav-tabs-wrapper">
+                  <span class="nav-tabs-title">Usuarios:</span>
+                  <ul class="nav nav-tabs" data-tabs="tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active show" href="#users-general" data-toggle="tab">
+                        <i class="material-icons">people</i> Generales
+                        <div class="ripple-container"></div>
+                      <div class="ripple-container"></div></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#users-admin" data-toggle="tab">
+                        <i class="material-icons">verified_user</i> Administradores
+                        <div class="ripple-container"></div>
+                      <div class="ripple-container"></div></a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="tab-content">
+                <div class="tab-pane active show" id="users-general">
+                  <table class="table table-hover">
+                    <thead class="text-info">
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Fecha de creación</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($usuarios_general as $usuario)
+                        @if($usuario->tipo_usuario == null && $usuario->google_id != env('BOT_UNPRG_SECRET_ID'))
+                          <tr>
+                            <td>{{ $usuario->name }}</td>
+                            <td>{{ $usuario->email }}</td>
+                            <td>{{ $usuario->created_at }}</td>
+                          </tr>
+                        @endif  
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+                <div class="tab-pane" id="users-admin">
+                  <table class="table table-hover">
+                    <thead class="text-info">
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Fecha de creación</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($usuarios_admin as $usuario)
+                        @if($usuario->tipo_usuario == 'ADMIN' && $usuario->google_id != env('BOT_UNPRG_SECRET_ID'))
+                          <tr>
+                            <td>{{ $usuario->name }}</td>
+                            <td>{{ $usuario->email }}</td>
+                            <td>{{ $usuario->created_at }}</td>
+                          </tr>
+                        @endif  
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     {{--<div class="container-fluid">
       <div class="row">
         <div class="col-lg-3 col-md-6 col-sm-6">

@@ -5,12 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header card-header-info d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">Listado de comandos</h4>
-                        <p class="card-category">Todos los comandos creados</p>
-                    </div>
-                    <img class="" style="width:75px" src="{{ asset('images') }}/wally-transparent.svg" alt="Wally BOT">
+                <div class="card-header card-header-info">
+                    <h4 class="card-title">Listado de comandos</h4>
+                    <p class="card-category">Todos los comandos creados</p>
+                    
                 </div>
                 <div class="card-body">
                     @if(session('mensaje'))
@@ -40,6 +38,7 @@
                                     <td>{{$comando->descripcion}}</td>
                                     <td class="text-center">{{$comando->tipo_comando}}</td>
                                     <td class="td-actions">
+                                        @if($comando->id != 1)
                                         <form  style="display: inline-block;" action="{{route('comando.edit_v2', $comando)}}" method="GET">
                                             <button type="submit" rel="tooltip" class="btn btn-info">
                                                 <i class="material-icons">edit</i>
@@ -53,7 +52,9 @@
                                                 <i class="material-icons">close</i>
                                             </button> 
                                         </form>
-                                        
+                                        @else
+                                        <p class="">Sin acción.</p>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -72,7 +73,7 @@
                             @endforeach --}}
                         </tbody>
                     </table>
-                    {{$comandos->links()}}
+                    {{--$personas->links()--}}
                 </div>
             </div>
             <a class="btn btn-info float-right" href={{route('comando.create')}} type="button"><span class="material-icons">

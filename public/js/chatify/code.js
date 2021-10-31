@@ -18,7 +18,6 @@ const messagesContainer = $(".messenger-messagingView .m-body"),
   url = $("meta[name=url]").attr("content"),
   access_token = $('meta[name="csrf-token"]').attr("content");
 // console.log(auth_id);
-
 /**
  *-------------------------------------------------------------
  * Global Templates
@@ -266,7 +265,7 @@ function disableOnLoad(action = true) {
     // hide send card
     $(".messenger-sendCard").hide();
     // add loading opacity to messages container
-    messagesContainer.css("opacity", ".5");
+    messagesContainer.css("opacity", "1");
     // disable message form fields
     messageInput.attr("readonly", "readonly");
     $("#message-form button").attr("disabled", "disabled");
@@ -1100,6 +1099,7 @@ $(document).ready(function() {
   $("body").on("click", ".messenger-list-item", function() {
     $(".messenger-list-item").removeClass("m-list-active");
     $(this).addClass("m-list-active");
+    $('textarea[name="message"]').text('');
   });
 
   // show info side button
@@ -1394,3 +1394,24 @@ $(document).ready(function() {
     }
   });
 });
+//Scripts
+$("body").on("click", ".comando_bot",function(){
+  console.log('asd');
+	if(messenger == 'user_1'){
+		$('textarea[name="message"]').text($(this).text());
+    $('#btn_enviar').click();
+    $('textarea[name="message"]').text('');
+	//console.log($(this).text());
+	}else{
+		$('textarea[name="message"]').text('')
+	}
+})
+/*$('.comando_bot').click(function(){
+  console.log('asd');
+	if(messenger == 'user_1'){
+		$('textarea[name="message"]').text($(this).text())
+	//console.log($(this).text());
+	}else{
+		$('textarea[name="message"]').text('')
+	}
+});*/

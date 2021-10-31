@@ -225,6 +225,17 @@ class MessagesController extends Controller
                         break;
                     case 'NORMAL':
                         $new_msj = $comando->respuesta;
+                        $new_msj = preg_replace("/((http|https|www)[^\s]+)/", '<a target=”_blank” href="$1">$0</a>', $new_msj);
+                        
+                        
+                        $new_msj= preg_replace("/href=\"www/", 'href="https://www', $new_msj);
+                        
+                        $c='a-zA-Z-_0-9'; // allowed characters in domainpart
+                        $la=preg_quote('!#$%&\'*+-/=?^_`{|}~', "/"); // additional allowed in first localpart
+                        $email="[$c$la][$c$la\.]*[^.]@[$c]+\.[$c]+\.[$c]+";
+                        //$email = "/[^@\s]*@[^@\s]*\.[^@\s]*/";
+                        // or with a link:
+                        $new_msj = preg_replace("/\b($email)\b/", '<a href="mailto:\1">\1</a>', $new_msj);
                         //También puede ser que tenga data
                         $no_es_grupal = true;
                         break;
@@ -235,6 +246,10 @@ class MessagesController extends Controller
                 }
             }    
         }
+        /*$respuesta_con_links= preg_replace("/((http|https|www)[^\s]+)/", '<a target=”_blank” href="$1">$0</a>', $comando->respuesta);
+        //miro si hay enlaces con solamente www, si es así le añado el https://
+        $respuesta_con_links= preg_replace("/href=\"www/", 'href="https://www', $respuesta_con_links);
+        $comando->respuesta = $respuesta_con_links;*/
         if($no_es_grupal && $no_cmd){
             //Preguntaremos si tiene un archivo de tipo_respuesta
             if($comando->tipo_respuesta != null){
@@ -247,11 +262,11 @@ class MessagesController extends Controller
         }else{
             if($no_cmd && !$no_es_grupal){
                 //Respuesta de comando grupal, tendría que responder con sus comandos hijos
-                $subcomandos = Subcomando::all()->where('comando_padre','=',$comando->id);
+                $subcomandos = Comando::all()->where('comando_padre','=',$comando->id);
                 //echo json_encode($subcomandos);die();
                 $respuesta_subcomandos = "🤖Hola, has elegido un comando grupal, con los siguientes subcomandos: \n";
                 foreach($subcomandos as $subcom){
-                    $respuesta_subcomandos = $respuesta_subcomandos . $subcom->nombre . "->" . $subcom->descripcion . "\n";
+                    $respuesta_subcomandos = $respuesta_subcomandos . "<code class='comando_bot' style='cursor:pointer;' >" . $subcom->nombre . "</code>" . " → " . $subcom->descripcion . ".\n";
                 }
                 $new_msj = $respuesta_subcomandos;
             }
@@ -297,16 +312,16 @@ class MessagesController extends Controller
         /guias -> Consulta las guías actuales\n
         /unprg -> ¿Dónde estudio?\n
         ";*/
-        $comandos_normal = Comando::all()->where('tipo_comando', '=', 'NORMAL');
-        $comandos_grupal = Comando::all()->where('tipo_comando', '=', 'GRUPAL');
+        $comandos_normal = Comando::all()->where('tipo_comando', '=', 'NORMAL')->where('comando_padre', '=', '1');
+        $comandos_grupal = Comando::all()->where('tipo_comando', '=', 'GRUPAL')->where('comando_padre', '=', '1');;
         
         //$comandos = array_merge($comandos_grupal,$comandos_normal);
         $respuesta = "🤖Hola, mi lista de comandos es :\n ";
         foreach($comandos_normal as $comando){
-            $respuesta = $respuesta . $comando->nombre . "->" . $comando->descripcion . "\n";
+            $respuesta = $respuesta . "<code class='comando_bot' style='cursor:pointer;' >" . $comando->nombre . "</code>" . " → " . $comando->descripcion . ".\n";
         }
         foreach($comandos_grupal as $comando){
-            $respuesta = $respuesta . $comando->nombre . "->" . $comando->descripcion . "\n";
+            $respuesta = $respuesta . "<code class='comando_bot' style='cursor:pointer;' >" . $comando->nombre . "</code>" . " → " . $comando->descripcion . ".\n";
         }
         return $respuesta;
     }
@@ -483,11 +498,13 @@ class MessagesController extends Controller
         $input = trim(filter_var($request['input'], FILTER_SANITIZE_STRING));
         $records = User::where('name', 'LIKE', "%{$input}%");
         foreach ($records->get() as $record) {
-            $getRecords .= view('Chatify::layouts.listItem', [
-                'get' => 'search_item',
-                'type' => 'user',
-                'user' => $record,
-            ])->render();
+            if($record->tipo_usuario != 'INVITADO'){
+                $getRecords .= view('Chatify::layouts.listItem', [
+                    'get' => 'search_item',
+                    'type' => 'user',
+                    'user' => $record,
+                ])->render();
+            }
         }
         // send the response
         return Response::json([

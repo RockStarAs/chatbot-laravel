@@ -6,7 +6,8 @@
   -->
     <div class="logo">
         <a href="{{ route('home') }}" class="simple-text logo-normal">
-            {{ __('PedritoBot') }}
+            <img style="width:25px" src="{{ asset('images') }}/unprg.png" alt="Universidad Nacional Pedro Ruíz Gallo">
+            {{ __('UNPRG') }}
         </a>
     </div>
     <div class="sidebar-wrapper">
@@ -14,39 +15,22 @@
             <li class="nav-item{{ $activePage == 'dashboard' ? ' active' : '' }}">
                 <a class="nav-link" href="{{ route('home') }}">
                     <i class="material-icons">dashboard</i>
-                    <p>{{ __('Dashboard') }}</p>
+                    <p>{{ __('Inicio') }}</p>
                 </a>
-            </li>
-            <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management') ? ' active' : '' }}">
-                <a class="nav-link" data-toggle="collapse" href="#laravelExample" aria-expanded="true">
-                    <i><img style="width:25px" src="{{ asset('images') }}/PedritoBot.svg"></i>
-                    <p>{{ __('Utilidades') }}
-                        <b class="caret"></b>
-                    </p>
-                </a>
-                <div class="collapse" id="laravelExample">
-                    <ul class="nav">
-                        <li class="nav-item{{ $activePage == 'user-management' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('chatify') }}">
-                                <i><img style="width:25px" src="{{ asset('images') }}/PedritoBot.svg"></i>
-                                <span class="sidebar-normal"> {{ __('Chatbot') }} </span>
-                            </a>
-                        </li>
-                        <li class="nav-item{{ $activePage == 'profile' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{-- route('profile.edit') --}}">
-                                <span class="sidebar-mini"> GU </span>
-                                <span class="sidebar-normal">{{ __('Guía UNPRG') }} </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
             </li>
             <li class="nav-item{{ $activePage == 'user-management' ? ' active' : '' }}">
                 <a class="nav-link" href="{{ route('chatify') }}">
-                    <i><img style="width:25px" src="{{ asset('images') }}/PedritoBot.svg"></i>
-                    <span class="sidebar-normal"> {{ __('PedritoBot') }} </span>
+                    <i><img style="width:25px" src="{{ asset('images') }}/fast.svg"></i>
+                    <p>{{ __('fast') }}</p>
                 </a>
             </li>
+            <li class="nav-item{{ $activePage == 'gestionar' ? ' active' : '' }}">
+                <a class="nav-link" href="{{ route('comando.index') }}">
+                    <i><img style="width:25px" src="{{ asset('images') }}/Wally-transparent.svg"></i>
+                    <p>{{ __('Wally') }}</p>
+                </a>
+            </li>
+            {{--
             @if(Auth::user()->tipo_usuario == 'ADMIN')
             <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management') ? ' active' : '' }}">
                 <a class="nav-link" data-toggle="collapse" href="#admin" aria-expanded="true">
@@ -71,6 +55,7 @@
                 </div>
             </li>
             @endif
+            --}}
             {{--<li class="nav-item{{ $activePage == 'table' ? ' active' : '' }}">
             <a class="nav-link" href="{{ route('table') }}">
                 <i class="material-icons">content_paste</i>
